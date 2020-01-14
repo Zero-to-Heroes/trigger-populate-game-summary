@@ -1,0 +1,32 @@
+# https://github.com/awslabs/serverless-application-model/blob/develop/versions/2016-10-31.md
+# Indentation needs to be set with spaces, because YAML...
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Update RDS database with the summary of created replays
+
+Resources:
+    SNSTopicReviewCreated:
+        Type: 'AWS::SNS::Topic'
+        Properties:
+            TopicName: 'review-published'
+            DisplayName: 'review-published'
+
+    PopulateGameSummaryFunction:
+        Type: AWS::Serverless::Function
+        Properties:
+            Handler: populate-game-summary.default
+            Runtime: nodejs8.10
+            Timeout: 120
+            CodeUri: ./dist/populate-game-summary
+            MemorySize: 128
+            Policies:
+                - AWSLambdaBasicExecutionRole
+                - AWSLambdaVPCAccessExecutionRole
+                - AmazonSESFullAccess
+                - SecretsManagerReadWrite
+                - AmazonSNSReadOnlyAccess
+            Events:
+                ReviewCreatedTopic:
+                    Type: SNS
+                    Properties:
+                        Topic: !Ref SNSTopicReviewCreated
