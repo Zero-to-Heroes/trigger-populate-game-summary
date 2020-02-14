@@ -1,4 +1,5 @@
 export interface ReviewMessage {
+	readonly replayKey: string;
 	readonly coinPlay: 'play' | 'coin';
 	readonly opponentClass: string;
 	readonly opponentDecklist: string;

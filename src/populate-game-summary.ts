@@ -23,6 +23,7 @@ const uploadStats = async (message: ReviewMessage, mysql: serverlessMysql.Server
 	const query = `
 		INSERT INTO replay_summary
 		(
+			replayKey,
 			coinPlay,
 			opponentClass,
 			opponentDecklist,
@@ -49,6 +50,7 @@ const uploadStats = async (message: ReviewMessage, mysql: serverlessMysql.Server
 			additionalResult
 		)
 		VALUES (
+			${escape(message.replayKey)},
 			${escape(message.coinPlay)},
 			${escape(message.opponentClass)},
 			${escape(message.opponentDecklist)},
