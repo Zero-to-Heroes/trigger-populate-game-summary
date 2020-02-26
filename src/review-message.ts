@@ -24,4 +24,5 @@ export interface ReviewMessage {
 	readonly playerDeckName: string;
 	readonly scenarioId: string;
 	readonly additionalResult: string;
+	readonly application: string;
 }

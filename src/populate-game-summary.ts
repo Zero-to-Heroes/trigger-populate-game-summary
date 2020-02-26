@@ -19,6 +19,17 @@ export default async (event): Promise<any> => {
 };
 
 const uploadStats = async (message: ReviewMessage, mysql: serverlessMysql.ServerlessMysql): Promise<boolean> => {
+	// if (message.userId === 'OW_2c40f5f0-4b1c-476a-98c0-d6ac63508d4b') {
+	// 	return false;
+	// }
+
+	const review: any = await mysql.query(`SELECT * FROM replay_summary WHERE reviewId = '${message.reviewId}'`);
+	// console.log('review?', review, review == null, review != null && review.length);
+	if (review.length > 0) {
+		console.log('review already handled', message.reviewId, review);
+		return true;
+	}
+
 	const escape = SqlString.escape;
 	const query = `
 		INSERT INTO replay_summary
@@ -47,7 +58,8 @@ const uploadStats = async (message: ReviewMessage, mysql: serverlessMysql.Server
 			buildNumber,
 			playerDeckName,
 			scenarioId,
-			additionalResult
+			additionalResult,
+			application
 		)
 		VALUES (
 			${escape(message.replayKey)},
@@ -74,7 +86,8 @@ const uploadStats = async (message: ReviewMessage, mysql: serverlessMysql.Server
 			${escape(message.buildNumber)},
 			${escape(message.playerDeckName)},
 			${escape(message.scenarioId)},
-			${escape(message.additionalResult)}
+			${escape(message.additionalResult)},
+			${escape(message.application)}
 		)
 	`;
 	console.log('running query', query);
